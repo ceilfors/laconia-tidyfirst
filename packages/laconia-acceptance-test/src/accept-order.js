@@ -3,10 +3,6 @@ const laconia = require("@laconia/core");
 const { req, res } = require("@laconia/event").apigateway;
 const KinesisOrderStream = require("./KinesisOrderStream");
 
-const instances = ({ env }) => ({
-  orderStream: new KinesisOrderStream(env.ORDER_STREAM_NAME)
-});
-
 const withCors = next => async (...args) => {
   const response = await next(...args);
   response.headers["Access-Control-Allow-Origin"] = "*";
@@ -29,4 +25,7 @@ const app = async (id, { orderStream }) => {
   return { status: "ok" };
 };
 
+const instances = ({ env }) => ({
+  orderStream: new KinesisOrderStream(env.ORDER_STREAM_NAME)
+})
 exports.handler = laconia(adapter(app)).register(instances);
