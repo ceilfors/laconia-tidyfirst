@@ -25,25 +25,6 @@ describe("SecretsManagerConfigConverter", () => {
     awsSecretsManager = new AWS.SecretsManager();
   });
 
-  describe("when there is no parameter to be retrieved", () => {
-    beforeEach(() => {
-      secretsManager.getSecretValue.mockImplementation(
-        yields({
-          Parameters: [],
-          InvalidParameters: []
-        })
-      );
-    });
-
-    it("return empty instances", async () => {
-      const configConverter = new SecretsManagerConfigConverter(
-        awsSecretsManager
-      );
-      const instances = await configConverter.convertMultiple({});
-      expect(instances).toEqual({});
-    });
-  });
-
   describe("when single parameter is retrieved", () => {
     let secretsStore;
     let configConverter;
@@ -123,6 +104,25 @@ describe("SecretsManagerConfigConverter", () => {
       );
 
       expect(secretsManager.getSecretValue).toHaveBeenCalledTimes(4);
+    });
+  });
+
+  describe("when there is no parameter to be retrieved", () => {
+    beforeEach(() => {
+      secretsManager.getSecretValue.mockImplementation(
+        yields({
+          Parameters: [],
+          InvalidParameters: []
+        })
+      );
+    });
+
+    it("return empty instances", async () => {
+      const configConverter = new SecretsManagerConfigConverter(
+        awsSecretsManager
+      );
+      const instances = await configConverter.convertMultiple({});
+      expect(instances).toEqual({});
     });
   });
 });
